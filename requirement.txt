@@ -1,0 +1,3 @@
+pip install sockets
+pip install Flask
+pip install time
