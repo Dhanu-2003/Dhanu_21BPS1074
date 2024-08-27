@@ -11,7 +11,7 @@
    
     <div class="title-main">
         <div class="title">
-            <label>Advanced Chess Game</label>
+            <label id="acg">Advanced Chess Game</label>
         </div>
         <div style="display: flex; flex-direction: column;">
             <div class="details" style="display: flex;">
@@ -129,11 +129,22 @@
                     
                 </div>
                 <div class="history">
-                    HISTORY
-                    for
+                    <label style="font-size: 30px;overflow-y: auto;"><b>HISTORY</b></label>
+                    <hr style="width: 100%;">
+                    {%for i in data[6]%}
+                       
+                    <lable>{{i}}</lable>
+                    
+                    {%endfor%}
                 </div>
                 <div class="history">
-                    CAPTURED
+                    <label style="font-size: 30px;"><b>HISTORY</b></label>
+                    <hr style="width: 100%;">
+                    {%for i in data[10]%}
+                       
+                    <lable>{{i}}</lable>
+                    
+                    {%endfor%}
                 </div>
             </div>
             <div class="div2" style="display: flex;flex-direction: column;">
@@ -152,7 +163,28 @@
         var temp = parseInt('{{data[3]}}');
         var selec = '{{data[8]}}';
         var pos_mov = '{{data[9]}}';
-       
+        var st = parseInt('{{data[11]}}');
+        
+        if(st==1){
+            document.getElementById("acg").innerText = "YOU WON";
+            document.getElementsByClassName("div1")[0].style.background = "green";
+            setTimeout(function() {
+                window.location = "/";
+            }, 2000);
+            alert("You will be redirected to main page after 5 seconds"); 
+
+            
+        }
+        else if(st==2){
+            document.getElementById("acg").innerText = "YOU TRIED YOUR BEST :)";
+            document.getElementsByClassName("div1")[0].style.background = "red";
+            setTimeout(function() {
+                window.location = "/";
+            }, 10000);
+            alert("You will be redirected to main page after 5 seconds"); 
+
+            window.location = "/";
+        }
         var len = parseInt((pos_mov.length));
         
         if(parseInt(temp)==1){

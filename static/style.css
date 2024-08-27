@@ -286,6 +286,7 @@ button:active{
 
 .history{
     display: flex;
+    flex-direction: column;
     width: 18%;
     height: 87%;
     border: 1px solid white;
@@ -294,5 +295,6 @@ button:active{
     color: white;
     font-family: monospace;
     font-size: 20px;
-    justify-content: center;
+    align-items: center;
+    justify-content: top;
 }

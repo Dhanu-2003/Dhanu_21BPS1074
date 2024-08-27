@@ -12,6 +12,7 @@ code = ""
 player_name = ""
 opo = "Waiting"
 
+cap = []
 
 grid = []
 chat = []
@@ -35,7 +36,7 @@ def listen():
     turn = eval(temp[0])
     grid = eval(temp[1])
     chat = eval(temp[2])
-    moves =(temp[3])
+    moves = eval(temp[3])
     print(moves)
     selected_p = ""
     pos_mov = []
@@ -107,8 +108,9 @@ def begin():
                temp+=(i+" ")
           else:
                temp+=i
-     print(moves)
-     return render_template("game.html",data = [player_name,opo,code,turn,grid,chat,moves,player_name[-2],selected_p,temp])
+     t_moves = []
+     
+     return render_template("game.html",data = [player_name,opo,code,turn,grid,chat,moves,player_name[-2],selected_p,temp,cap])
           
      
 @app.route("/select/<num>",methods = ["GET"])
@@ -122,21 +124,28 @@ def select(num):
 
 @app.route("/mm/<f>/<selec>",methods=["GET"])
 def mm(f,selec):
-     global turn, grid, chat,moves,selected_p,pos_mov
+     global turn, grid, chat,moves,selected_p,pos_mov,cap
      data = send("C-"+str(f)+"-"+str(selec)+"-"+code).split("-")
      print(data)
      print("===========")
      turn = eval(data[0])
      grid = eval(data[1])
      chat = eval(data[2])
-     moves = (data[3]) 
+     moves = eval(data[3])
+     cap = eval(data[4])
+     print("------------")
+     print(moves) 
+     print("------------------------")
      selected_p = ""
      pos_mov=""
+     if int(data[5])==5:
+          return "Win"
      return redirect(url_for("begin"))
 
 @app.route("/oponent")
 def oponent():
-    global turn,grid,chat,moves,selected_p,pos_mov
+    global turn,grid,chat,moves,selected_p,pos_mov,cap
+
     selected_p = ""
     while True:
         mes = send("H-"+str(player_name[-2])+"-"+code)
@@ -146,16 +155,19 @@ def oponent():
             turn = eval(temp[0])
             grid = eval(temp[1])
             chat = eval(temp[2])
-            moves = (temp[3])
+            moves = eval(temp[3])
+            cap = eval(temp[4])
             selected_p = ""
             time.sleep(1)
             pos_mov = []
-            
+            if int(temp[5])==5:
+                 return "Loose"
             break
         time.sleep(5)
+    print(moves)
 
     return redirect(url_for("begin"))
 
 if __name__ == "__main__":
 
-    app.run(host='0.0.0.0',debug=True)
+    app.run(host='0.0.0.0',debug=True,port=5000)

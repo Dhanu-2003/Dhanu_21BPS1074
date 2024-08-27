@@ -105,8 +105,22 @@
             temp.color = "black";
         }
         function go(){
-            document.getElementById("go").innerText = "Waiting for oponent";
-            window.location = `/letsplay/${data[0]}/${data[1]}/${data[2]}/${data[3]}/${data[4]}`;
+            var count = 0;
+            for(let i=0;i<5;i++){
+                if (data[i]!=0){
+                    count+=1;
+                }
+            }
+            if (count==5){
+                document.getElementById("go").style.background = "green";
+                document.getElementById("go").innerText = "Waiting for oponent";
+                window.location = `/letsplay/${data[0]}/${data[1]}/${data[2]}/${data[3]}/${data[4]}`;
+            }
+            else{
+                document.getElementById("go").style.background = "red";
+                document.getElementById("go").innerText = "Select 5 players";
+            }
+            
             
         }
     </script>

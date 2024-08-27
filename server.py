@@ -117,7 +117,6 @@ def handle_client(client_socket, client_address):
                 client_socket.send(toSend.encode("utf-8"))
             elif message[0]=="B":
                 temp = message.split("-")[1::]
-                
                 temp_n = temp[0].split()
                 if data[temp[1]][0][1] in temp_n[0]:
                     temp_g = grid[code]
@@ -132,7 +131,6 @@ def handle_client(client_socket, client_address):
                         try:
                             print(temp_g[row+1][col])
                             if(temp_g[row+1][col]==""):
-                                
                                 pos_mov.append("F")
                         except:
                             pass
@@ -201,7 +199,7 @@ def handle_client(client_socket, client_address):
                         try:
                             if row>1:
                                 if(data[temp[1]][0][2] not in temp_g[row-1][col+1] and data[temp[1]][0][2] not in temp_g[row-2][col+2]):
-                                    pos_mov.append("BL")
+                                    pos_mov.append("BR")
                         except:
                             pass
                 else:
@@ -215,27 +213,26 @@ def handle_client(client_socket, client_address):
                     pos_mov = []
                     if "P" in ele:
                         try:
-                            if(data[temp[1]][1][2] not in temp_g[row+1][col] ):
+                            if(temp_g[row+1][col]==""):
                                 pos_mov.append("B")
                         except:
                             pass
                         try:
                             if row!=0:
-                                if(data[temp[1]][1][2] not in temp_g[row-1][col]):
-                                    
+                                if(temp_g[row-1][col]==""):
                                     pos_mov.append("F")
                         except:
                             pass
                         try:
                             if col!=0:
                                 print(temp_g[row][col-1],row,col)
-                                if(data[temp[1]][1][2] not in temp_g[row][col-1]):
+                                if(temp_g[row][col-1]==""):
                                     print(True,data[temp[1]][1][2])
                                     pos_mov.append("L")
                         except:
                             pass
                         try:
-                            if(data[temp[1]][1][2] not in temp_g[row][col+1]):
+                            if(temp_g[row][col+1]==""):
                                 pos_mov.append("R")
                         except:
                             pass
@@ -285,7 +282,7 @@ def handle_client(client_socket, client_address):
                         try:
                             if row>1:
                                 if(data[temp[1]][1][2] not in temp_g[row-1][col+1] and data[temp[1]][1][2] not in temp_g[row-2][col+2]):
-                                    pos_mov.append("FL")
+                                    pos_mov.append("FR")
                         except:
                             pass
                 client_socket.send(str(pos_mov).encode("utf-8"))
@@ -297,15 +294,12 @@ def handle_client(client_socket, client_address):
                 row = int(t_e)//5
                 col = int(t_e)%5
                 tele = grid[t_c][row][col]
+                moves[t_c].append(tele+"=>"+t_m)
                 if "B" in tele:
                     if t_m=="F":
                         t_m="B"
                     elif t_m=="B":
                         t_m="F"
-                    elif t_m=="L":
-                        t_m="R"
-                    elif t_m=="R":
-                        t_m="L"
                     elif t_m=="FR":
                         t_m="BR"
                     elif t_m=="FL":
@@ -314,7 +308,7 @@ def handle_client(client_socket, client_address):
                         t_m="FR"
                     elif t_m=="BL":
                         t_m="FL"
-                moves[t_c].append(tele+"-"+t_m)
+                
                 print(moves)
                 if turn[t_c][0]==1:
                     turn[t_c][0]=0
@@ -324,11 +318,9 @@ def handle_client(client_socket, client_address):
                     turn[t_c][0]=1
                 print(turn[t_c])
                 if t_m=="F":
-                    
                     if "P" in tele:
                         grid[t_c][row][col],grid[t_c][row+1][col] = grid[t_c][row+1][col],grid[t_c][row][col]
                     elif "H1" in tele:
-                        
                         if grid[t_c][row+1][col]!="":
                             if tele[0]=="A":
                                 cap[t_c][0].append(grid[t_c][row+1][col])
@@ -339,10 +331,8 @@ def handle_client(client_socket, client_address):
                                 cap[t_c][0].append(grid[t_c][row+2][col])
                             else:
                                 cap[t_c][1].append(grid[t_c][row+2][col])
-                        
-                        grid[t_c][row+2][col],grid[t_c][row][col] = grid[t_c][row][col],""
+                        grid[t_c][row+2][col],grid[t_c][row][col],grid[t_c][row+1][col] = grid[t_c][row][col],"",""
                 elif t_m=="L":
-                    
                     if "P" in tele:
                         grid[t_c][row][col],grid[t_c][row][col-1] = grid[t_c][row][col-1],grid[t_c][row][col]
                     elif "H1" in tele:
@@ -358,7 +348,7 @@ def handle_client(client_socket, client_address):
                             else:
                                 cap[t_c][1].append(grid[t_c][row][col-2])
                         
-                        grid[t_c][row][col-2],grid[t_c][row][col] = grid[t_c][row][col],""
+                        grid[t_c][row][col-2],grid[t_c][row][col],grid[t_c][row][col-1] = grid[t_c][row][col],"",""
                 elif t_m=="R":
                     
                     if "P" in tele:
@@ -376,7 +366,7 @@ def handle_client(client_socket, client_address):
                             else:
                                 cap[t_c][1].append(grid[t_c][row][col+2])
                         
-                        grid[t_c][row+2][col],grid[t_c][row][col] = grid[t_c][row][col],""
+                        grid[t_c][row][col+2],grid[t_c][row][col],grid[t_c][row][col+1] = grid[t_c][row][col],"",""
                 elif t_m=="B":
                     
                     if "P" in tele:
@@ -393,7 +383,7 @@ def handle_client(client_socket, client_address):
                             else:
                                 cap[t_c][1].append(grid[t_c][row-2][col])
                         
-                        grid[t_c][row-2][col],grid[t_c][row][col] = grid[t_c][row][col],""
+                        grid[t_c][row-2][col],grid[t_c][row][col],grid[t_c][row-1][col] = grid[t_c][row][col],"",""
                 
                 elif t_m=="FL":
                     print("inside")
@@ -408,7 +398,7 @@ def handle_client(client_socket, client_address):
                         else:
                             cap[t_c][1].append(grid[t_c][row+2][col-2])
                     
-                    grid[t_c][row+2][col-2],grid[t_c][row][col] = grid[t_c][row][col],""
+                    grid[t_c][row+2][col-2],grid[t_c][row][col],grid[t_c][row+1][col-1] = grid[t_c][row][col],"",""
                 elif t_m=="FR":
                     if grid[t_c][row+1][col+1]!="":
                         if tele[0]=="A":
@@ -421,7 +411,7 @@ def handle_client(client_socket, client_address):
                         else:
                             cap[t_c][1].append(grid[t_c][row+2][col+2])
                     
-                    grid[t_c][row+2][col+2],grid[t_c][row][col] = grid[t_c][row][col],""
+                    grid[t_c][row+2][col+2],grid[t_c][row][col],grid[t_c][row+1][col+1] = grid[t_c][row][col],"",""
                 
                 elif t_m=="BL":
                     if grid[t_c][row-1][col-1]!="":
@@ -435,7 +425,7 @@ def handle_client(client_socket, client_address):
                         else:
                             cap[t_c][1].append(grid[t_c][row-2][col-2])
                     
-                    grid[t_c][row-2][col-2],grid[t_c][row][col] = grid[t_c][row][col],""
+                    grid[t_c][row-2][col-2],grid[t_c][row][col],grid[t_c][row-1][col-1] = grid[t_c][row][col],"",""
                 
                 elif t_m=="BR":
                     if grid[t_c][row-1][col+1]!="":
@@ -449,24 +439,27 @@ def handle_client(client_socket, client_address):
                         else:
                             cap[t_c][1].append(grid[t_c][row-2][col+2])
                     
-                    grid[t_c][row-2][col+2],grid[t_c][row][col] = grid[t_c][row][col],""
+                    grid[t_c][row-2][col+2],grid[t_c][row][col],grid[t_c][row-1][col+1] = grid[t_c][row][col],"",""
                 
                 print(tele)
-
+                
                 if "A" in tele:
-                    
-                    toSend = str(turn[t_c][0])+"-"+str(grid[t_c])+"-"+str(chat[t_c])+"-"+str(moves[t_c])
+                    status = len(cap[t_c][1])
+                    toSend = str(turn[t_c][0])+"-"+str(grid[t_c])+"-"+str(chat[t_c])+"-"+str(moves[t_c])+"-"+str(cap[t_c][0])+"-"+str(status)
                 else:
-                    toSend = str(turn[t_c][1])+"-"+str(grid[t_c])+"-"+str(chat[t_c])+"-"+str(moves[t_c])
+                    status = len(cap[t_c][1])
+                    toSend = str(turn[t_c][1])+"-"+str(grid[t_c])+"-"+str(chat[t_c])+"-"+str(moves[t_c])+"-"+str(cap[t_c][1])+"-"+str(status)
                 client_socket.send(toSend.encode("utf-8"))
 
             elif message[0]=="H":
                 temp = message.split("-")[1::]
                 print(turn[temp[1]][0],turn[temp[1]][1],turn,temp[1])
                 if temp[0]=="A":
-                    toSend = "9-"+str(turn[temp[1]][0])+"-"+str(grid[temp[1]])+"-"+str(chat[temp[1]])+"-"+str(moves[temp[1]])
+                    status = len(cap[temp[1]][1])
+                    toSend = "9-"+str(turn[temp[1]][0])+"-"+str(grid[temp[1]])+"-"+str(chat[temp[1]])+"-"+str(moves[temp[1]])+"-"+str(cap[temp[1]][0])+"-"+str(status)
                 else:
-                    toSend = "9-"+str(turn[temp[1]][1])+"-"+str(grid[temp[1]])+"-"+str(chat[temp[1]])+"-"+str(moves[temp[1]])
+                    status = len(cap[temp[1]][0])
+                    toSend = "9-"+str(turn[temp[1]][1])+"-"+str(grid[temp[1]])+"-"+str(chat[temp[1]])+"-"+str(moves[temp[1]])+"-"+str(cap[temp[1]][1])+"-"+str(status)
                 client_socket.send(toSend.encode("utf-8"))
         
                 

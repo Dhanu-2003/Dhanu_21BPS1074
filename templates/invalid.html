@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <title>Flask Webpage</title>
+    
+</head>
+<body>
+   
+    <div class="title-main">
+        <div class="title">
+            <label>Advanced Chess Game</label>
+        </div>
+        <div class="mode">
+            <label style="color: red;font-family: monospace;font-size: 50px;">INVALID ROOM CODE</label>
+        </div>
+    </div>
+    <script>
+        function start(){
+            const name = document.getElementById("name-start").value;
+            window.location = `/start/${name}`;
+        }
+        function join(){
+            const name = document.getElementById("name2").value;
+            const code1 = document.getElementById("code").value;
+            window.location = `/join/${name}/${code1}`;
+        }
+    </script>
+    
+</body>
+</html>
