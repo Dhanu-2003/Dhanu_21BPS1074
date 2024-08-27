@@ -1,137 +1,173 @@
+from flask import Flask, render_template, redirect, url_for
 import socket
 import threading
-import random
+import time
 
-data = {}
-pos = {}
-grid = {}
-chat = {}
-moves = {}
-turn = {}
+app = Flask(__name__)
 
-def handle_client(client_socket, client_address):
-    print(f"Accepted connection from {client_address}")
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client.connect(('127.0.0.1', 1074))
+
+code = ""
+player_name = ""
+opo = "Waiting"
+
+cap = []
+
+grid = []
+chat = []
+moves = []
+turn = 0
+
+selected_p = ""
+
+pos_mov=[]
     
+def send(message):
+        client.send(message.encode('utf-8'))
+        response = client.recv(1024).decode('utf-8')
+        return response
+
+def listen():
+    global turn,grid,chat,moves,selected_p,pos_mov
+    selected_p = ""
+    mes = client.recv(1024).decode('utf-8')    
+    temp = mes.split("-")
+    turn = eval(temp[0])
+    grid = eval(temp[1])
+    chat = eval(temp[2])
+    moves = eval(temp[3])
+    print(moves)
+    selected_p = ""
+    pos_mov = []
+    return redirect(url_for("begin"))
+     
+@app.route("/")
+def first():
+     return render_template("index.html")
+
+
+@app.route("/start/<name>", methods=["GET"])
+def start(name):
+     global player_name,code
+     code = send("1-"+name)
+     player_name = name
+     return redirect(url_for("inputs"))
+@app.route("/join/<name>/<code1>",methods=["GET"])
+def join(name,code1):
+     global player_name, code
+     temp = send("2-"+code1+"-"+name)
+     player_name = name
+     print(temp)
+     if temp=="1":
+          code = code1
+          return redirect(url_for("inputs"))
+     else:
+          return "Invalid"
+
+@app.route("/inputs")
+def inputs():
+     global player_name,opo,code
+     return render_template("start_page.html", data = [player_name,opo,code])
+@app.route("/letsplay/<a>/<b>/<c>/<d>/<e>",methods=["GET"])
+def letsplay(a,b,c,d,e):
+     global player_name,code,opo,grid,chat,moves,turn
+
+    
+
+     check = "0"
+     pos = "a-"+a+"-"+b+"-"+c+"-"+d+"-"+e+"-"+player_name+"-"+code
+     send(pos)
+     while check=="0":
+          print("inside")
+          check = send("3-"+player_name+"-"+code)
+          print(check)
+          time.sleep(1)
+
+     temp = check.split("-")
+     print(temp)
+     opo = temp[1]
+     player_name = temp[0]
+     code = temp[2]
+
+     temp_d = eval(send("A-"+code+"-"+player_name))
+     turn = temp_d[0]
+     grid = temp_d[1]
+     moves = temp_d[2]
+     chat = temp_d[3]
+     print(temp_d)
+     
+     return redirect(url_for("begin"))
+@app.route("/begin")
+def begin():
+     global player_name,code,opo,turn,grid,chat,moves,selected_p,pos_mov
+     temp=""
+     
+     for i in pos_mov:
+          if len(i)==1:
+               temp+=(i+" ")
+          else:
+               temp+=i
+     t_moves = []
+     
+     return render_template("game.html",data = [player_name,opo,code,turn,grid,chat,moves,player_name[-2],selected_p,temp,cap])
+          
+     
+@app.route("/select/<num>",methods = ["GET"])
+def select(num):
+     global selected_p,pos_mov
+     selected_p = num
+     mes = eval(send("B-"+player_name+"-"+code+"-"+selected_p))
+     pos_mov = mes
+     print(mes)
+     return redirect(url_for("begin"))
+
+@app.route("/mm/<f>/<selec>",methods=["GET"])
+def mm(f,selec):
+     global turn, grid, chat,moves,selected_p,pos_mov,cap
+     data = send("C-"+str(f)+"-"+str(selec)+"-"+code).split("-")
+     print(data)
+     print("===========")
+     turn = eval(data[0])
+     grid = eval(data[1])
+     chat = eval(data[2])
+     moves = eval(data[3])
+     cap = eval(data[4])
+     print("------------")
+     print(moves) 
+     print("------------------------")
+     selected_p = ""
+     pos_mov=""
+     if int(data[5])==5:
+          return "Win"
+     return redirect(url_for("begin"))
+
+@app.route("/oponent")
+def oponent():
+    global turn,grid,chat,moves,selected_p,pos_mov,cap
+
+    selected_p = ""
     while True:
-        try:
-            message = client_socket.recv(1024).decode('utf-8')
-            if not message:
-                print(f"Connection closed by {client_address}")
-                break
-            if message[0]=="1":
-                name = message.split("-")[1]
-                while True:
-                    try:
-                        code = str(random.randint(12345,99999))
-                        data[code] = [[client_socket,name+" [A]"],[]]
-                        pos[code] = [[],[]]
-                        data[code][0][0].send(code.encode('utf-8'))
-                        moves[code] = []
-                        grid[code] = []
-                        chat[code] = []
-                        turn[code] = [1,0]
-                        break
-                    except:
-                        continue
-            elif message[0]=="2":
-                temp = message.split("-")
-                code = temp[1]
-                name = temp[2]
-                try:
-                    data[code][1].append(client_socket)
-                    data[code][1].append(name+" [B]")
-                    data[code][1][0].send("1".encode('utf-8'))
-                except Exception as e:
-                    print(e)
-                    client_socket.send("0".encode('utf-8'))
-            elif message[0]=="a":
-                temp = message.split("-")[1::]
-                k = temp[0:5]
-                if temp[-2]==data[temp[-1]][0][1]:
-                    for i in range(5):
-                        if k[i]=="1":
-                            k[i]="A:P"
-                        elif k[i]=="2":
-                            k[i]="A:H1"
-                        elif k[i]=="3":
-                            k[i]="A:H2"
-                    print(k)
-                    pos[temp[-1]][0].extend(k)
-                    print(pos)
-                    data[temp[-1]][0][0].send("1".encode("utf-8"))
-                else:
-                    for i in range(5):
-                        if k[i]=="1":
-                            k[i]="B:P"
-                        elif k[i]=="2":
-                            k[i]="B:H1"
-                        elif k[i]=="3":
-                            k[i]="B:H2"
-                    print(k)
-                    pos[temp[-1]][1].extend(k)
-                    print(pos)
-                    data[temp[-1]][1][0].send("1".encode("utf-8"))
-            elif message[0]=="3":
-                temp = message.split("-")[1::]
-                print(temp)
-                if data[temp[1]][0][1]==temp[0]:
-                    if pos[temp[-1]][1]!=[]:
-                        toSend = data[temp[-1]][0][1]+"-"+data[temp[-1]][1][1]+"-"+temp[-1]
-                        temp_code = temp[1]
-                        
-                        grid[temp_code] = [pos[temp_code][0]]
-                        grid[temp_code].extend([["" for _ in range(5)] for _ in range(3)]+[pos[temp_code][1]])
-                        print(toSend)
-                        print("--------------------------")
-                        client_socket.send(toSend.encode("utf-8"))
-                    else:
-                        client_socket.send("0".encode("utf-8"))
-                else:
-                    if pos[temp[-1]][0]!=[]:
-                        toSend = data[temp[-1]][1][1]+"-"+data[temp[-1]][0][1]+"-"+temp[-1]
-                        temp_code = temp[-1]
-                        
-                        grid[temp_code] = [pos[temp_code][0]]
-                        grid[temp_code].extend([["" for _ in range(5)] for _ in range(3)]+[pos[temp_code][1]])
-                        print(toSend)
-                        print("--------------------------")
-                        client_socket.send(toSend.encode("utf-8"))
-                    else:
-                        client_socket.send("0".encode("utf-8"))
-            
-            elif message[0]=="A":
-                temp = message.split("-")
-                temp_code = temp[1]
-                temp_name = temp[2]
-                temp_grid = grid[temp_code]
-                if data[temp_code][0][1]==temp_name:
-                    temp_turn = turn[temp_code][0]
-                else:
-                    temp_turn = turn[temp_code][1]
-                toSend = str([temp_turn,temp_grid,moves[temp_code],chat[temp_code]])
-                client_socket.send(toSend.encode("utf-8"))
-                        
-                    
-
-                
-
-
-        except ConnectionResetError:
-            print(f"Connection reset by {client_address}")
+        mes = send("H-"+str(player_name[-2])+"-"+code)
+        print(mes)
+        if mes[0]=="9":
+            temp = mes.split("-")[1::]
+            turn = eval(temp[0])
+            grid = eval(temp[1])
+            chat = eval(temp[2])
+            moves = eval(temp[3])
+            cap = eval(temp[4])
+            selected_p = ""
+            time.sleep(1)
+            pos_mov = []
+            if int(temp[5])==5:
+                 return "Loose"
             break
+        time.sleep(5)
+    print(moves)
 
-    client_socket.close()
-
-def start_server(host='0.0.0.0', port=1074):
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind((host, port))
-    server.listen(5)
-    print(f"Server listening on {host}:{port}")
-
-    while True:
-        client_socket, client_address = server.accept()
-        client_handler = threading.Thread(target=handle_client, args=(client_socket, client_address))
-        client_handler.start()
+    return redirect(url_for("begin"))
 
 if __name__ == "__main__":
-    start_server()
+
+    app.run(host='0.0.0.0',debug=True,port=5100)
