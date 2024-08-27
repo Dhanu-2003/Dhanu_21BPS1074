@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <title>Flask Webpage</title>
+    
+</head>
+<body>
+   
+    <div class="title-main">
+        <div class="title">
+            <label>Advanced Chess Game</label>
+        </div>
+        <div class="mode">
+            <div class="start">
+               
+                <label style="font-family:monospace;font-size: 30px; color: white;width: 100%;text-align: center;padding: 10px;
+                margin-bottom: 20px;">CHALLENGE YOUR FRIEND</label>
+                
+                <input id="name-start" style="font-family:monospace;font-size: 20px; display: inline; width: 50%;
+                background-color: white;height: fit-content;
+                width: fit-content;margin: 20px;text-align: center;padding: 10px;
+                border-radius: 20px;" placeholder="your name" type="text" required>
+                
+                <button onclick="start()">
+                    Start
+                </button>
+            </div>
+            <div class="join">
+                <label style="font-family:monospace;font-size: 30px; color: white;width: 100%;text-align: center;padding: 10px;
+                margin-bottom: 20px;">ACCEPT CHALLENGE</label>
+                <div style="display: flex;">
+                    <input id="name2" style="font-family:monospace;font-size: 20px; display: inline; width: 40%;
+                background-color: white;border-radius: 20px;
+                margin: 20px;text-align: center;padding: 10px;" type="text" placeholder="Enter your name" required>
+                <input id="code" style="font-family:monospace;font-size: 20px; display: inline; width: 40%;
+                background-color: white;border-radius: 20px;
+                margin: 20px;text-align: center;padding: 10px;" type="text" placeholder="Enter code here" required>
+                </div>
+                <button onclick="join()">
+                    Join
+                </button>
+                
+            </div>
+            <div class="spectate">
+                <label style="font-family:monospace;font-size: 30px; color: white;width: 100%;text-align: center;padding: 10px;
+                margin-bottom: 20px;">SPECTATE A GAME</label>
+                <input style="font-family:monospace;font-size: 20px; display: inline; width: 50%;
+                background-color: white;border-radius: 20px;
+                margin: 20px;text-align: center;padding: 10px;" type="text" placeholder="Enter code here" requireds>
+                
+                <button>
+                    Spectate
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function start(){
+            const name = document.getElementById("name-start").value;
+            window.location = `/start/${name}`;
+        }
+        function join(){
+            const name = document.getElementById("name2").value;
+            const code1 = document.getElementById("code").value;
+            window.location = `/join/${name}/${code1}`;
+        }
+    </script>
+    
+</body>
+</html>

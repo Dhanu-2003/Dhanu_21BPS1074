@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <title>Flask Webpage</title>
+    
+</head>
+<body>
+   
+    <div class="title-main">
+        <div class="title">
+            <label>Advanced Chess Game</label>
+        </div>
+        <div style="display: flex;">
+            <div class="details" style="display: flex;">
+                <label style="color: white;">Your Identity = {{data[0]}}</label>
+                <label style="color: white;">Oponent Identity = {{data[1]}}</label>
+                <label style="color: white;">Code = {{data[2]}}</label>
+            </div>
+           
+        </div>
+        <div class="choice">
+            <button class="card-main" id="1" onclick="edit('1')">
+
+            </button>
+            <button class="card-main" id="2" onclick="edit('2')">
+
+            </button>
+            <button class="card-main" id="3" onclick="edit('3')">
+
+            </button>
+            <button class="card-main" id="4" onclick="edit('4')">
+
+            </button>
+            <button class="card-main" id="5" onclick="edit('5')">
+
+            </button>
+            
+        </div>
+
+        <div class="Available">
+            <button class="card" onclick="add(1)">
+                PAWN
+            </button>
+            <button class="card" onclick="add(2)">
+                HERO 1
+            </button>
+            <button class="card" onclick="add(3)">
+                HERO 2
+            </button>
+            
+            
+        </div>
+        <div style="display: flex;width: 100%; justify-content: center;padding-bottom: 20px;">
+            <button style="width: 70%;" onclick="go()" id="go">
+                Play
+            </button>
+
+        </div>
+        
+        
+
+       
+    </div>
+    <script>
+        var data = [0,0,0,0,0];
+        var selected = "1";
+        var temp = document.getElementById(selected).style;
+        temp.background = "white";
+        temp.color = "black";
+        function edit(x){
+            selected = x;
+            let em = document.getElementsByClassName("card-main");
+            for(let i=0;i<em.length;i++){
+                em[i].style.background = "black";
+                em[i].style.color = "white";
+            }
+            temp = document.getElementById(selected).style;
+            temp.background = "white";
+            temp.color = "black";
+            data[parseInt(x)-1] = 0;
+        }
+        function add(y){
+            data[parseInt(selected)-1] = y;
+            if(y==1){
+                document.getElementById(selected).innerText = "P";
+            }
+            else if(y==2){
+                document.getElementById(selected).innerText = "H1";
+            }
+            else if(y==3){
+                document.getElementById(selected).innerText = "H2";
+            }
+            var val = parseInt(selected)+1
+            selected = val.toString();
+            let em = document.getElementsByClassName("card-main");
+            for(let i=0;i<em.length;i++){
+                em[i].style.background = "black";
+                em[i].style.color = "white";
+            }
+            temp = document.getElementById(selected).style;
+            temp.background = "white";
+            temp.color = "black";
+        }
+        function go(){
+            document.getElementById("go").innerText = "Waiting for oponent";
+            window.location = `/letsplay/${data[0]}/${data[1]}/${data[2]}/${data[3]}/${data[4]}`;
+            
+        }
+    </script>
+   
+    
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <title>Flask Webpage</title>
+    
+</head>
+<body>
+   
+    <div class="title-main">
+        <div class="title">
+            <label>Advanced Chess Game</label>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+            <div class="details" style="display: flex;">
+                <label id="u" class="l">Your Identity = {{data[0]}}</label>
+                <label id="o" class="l">Oponent Identity = {{data[1]}}</label>
+                <label style="color: white;">Code = {{data[2]}}</label>
+            </div>
+
+            <div class="div1" style="display: flex;flex-direction: row;">
+                <div class="grid">
+                    <div class="r">
+                        
+                        <button class="c" onclick="validate(0)">
+                            {{data[4][0][0]}}
+                        </button>
+                        <button class="c" onclick="validate(1)">
+                            {{data[4][0][1]}}
+                        </button>
+                        <button class="c" onclick="validate(2)">
+                            {{data[4][0][2]}}
+                        </button>
+                        <button class="c" onclick="validate(3)">
+                            {{data[4][0][3]}}
+                        </button>
+                        <button class="c" onclick="validate(4)">
+                            {{data[4][0][4]}}
+                        </button>
+                    </div>
+                    <div class="r">
+                        <button class="c" onclick="validate(5)">
+                            {{data[4][1][0]}}
+                        </button>
+                        <button class="c" onclick="validate(6)">
+                            {{data[4][1][1]}}
+                        </button> 
+                        <button class="c" onclick="validate(7)">
+                            {{data[4][1][2]}}
+                        </button>
+                        <button class="c" onclick="validate(8)">
+                            {{data[4][1][3]}}
+                        </button>
+                        <button class="c" onclick="validate(9)">
+                            {{data[4][1][4]}}
+                        </button>
+                    </div>
+                    <div class="r">
+                        <button class="c" onclick="validate(10)">
+                            {{data[4][2][0]}}
+                        </button>
+                        <button class="c" onclick="validate(11)">
+                            {{data[4][2][1]}}
+                        </button>
+                        <button class="c" onclick="validate(12)">
+                            {{data[4][2][2]}}
+                        </button>
+                        <button class="c" onclick="validate(13)">
+                            {{data[4][2][3]}}
+                        </button>
+                        <button class="c" onclick="validate(14)">
+                            {{data[4][2][4]}}
+                        </button>
+                    </div>
+                    <div class="r">
+                        <button class="c" onclick="validate(15)">
+                            {{data[4][3][0]}}
+                        </button>
+                        <button class="c" onclick="validate(16)">
+                            {{data[4][3][1]}}
+                        </button>
+                        <button class="c" onclick="validate(17)">
+                            {{data[4][3][2]}}
+                        </button>
+                        <button class="c" onclick="validate(18)">
+                            {{data[4][3][3]}}
+                        </button>
+                        <button class="c" onclick="validate(19)">
+                            {{data[4][3][4]}}
+                        </button>
+                    </div>
+                    <div class="r">
+                        <button class="c" onclick="validate(20)">
+                            {{data[4][4][0]}}
+                        </button>
+                        <button class="c" onclick="validate(21)">
+                            {{data[4][4][1]}}
+                        </button>
+                        <button class="c" onclick="validate(22)">
+                            {{data[4][4][2]}}
+                        </button>
+                        <button class="c" onclick="validate(23)">
+                            {{data[4][4][3]}}
+                        </button>
+                        <button class="c" onclick="validate(24)">
+                            {{data[4][4][4]}}
+                        </button>
+                    </div>
+                    <div class="emp" style="display: flex;width: 10px;height: 20px;"></div>
+                    <label id="labsec" class="selected" style="font-size: 20px;font-family: monospace; color: white;">SELECTED : </label>
+                    <div class="possible">
+                        
+                        <button class="p" onclick="make_move(0)">
+                          
+                        </button>
+                        <button class="p" onclick="make_move(1)">
+                            
+                        </button>
+                        <button class="p" onclick="make_move(2)">
+                           
+                        </button>
+                        <button class="p" onclick="make_move(3)">
+                         
+                        </button>
+                        
+                    </div>
+                    
+                </div>
+                <div class="history">
+                    HISTORY
+                    for
+                </div>
+                <div class="history">
+                    CAPTURED
+                </div>
+            </div>
+            <div class="div2" style="display: flex;flex-direction: column;">
+                <div class="butt">
+
+                </div>
+                <div class="chat">
+
+                </div>
+            </div>
+        </div>
+       
+    </div>
+    <script>
+        var idt = '{{data[7]}}';
+        var temp = parseInt('{{data[3]}}');
+        var selec = '{{data[8]}}';
+        var pos_mov = '{{data[9]}}';
+       
+        var len = parseInt((pos_mov.length));
+        
+        if(parseInt(temp)==1){
+            var m = document.getElementById("o");
+            m.style.background = "black";
+            m.style.color = "white";
+        }
+        else{
+            var m = document.getElementById("u");
+            m.style.background = "black";
+            m.style.color = "white";
+            window.location = "/oponent";
+        }
+        if(selec!=""){
+            
+            var temp_s = document.getElementsByClassName("c")[parseInt(selec)];
+            
+            temp_s.style.background = "black";
+            temp_s.style.color = " white";
+            temp_s.style.border = "1px white solid"; 
+            var t = document.getElementById("labsec");
+            t.innerText = "SELECTED : "+temp_s.innerText;
+
+        }
+        var pos_lab = document.getElementsByClassName("p");
+        var pos_lab_i = 0;
+       
+        for(let i=0;i<len;i+=2){
+
+            pos_lab[pos_lab_i].innerText = pos_mov[i]+pos_mov[i+1];
+            pos_lab[pos_lab_i].style.display="flex";
+            pos_lab_i++;
+        }
+        function validate(i){
+            if(temp==1){
+                var temp_s = document.getElementsByClassName("c");
+              
+                if(temp_s[i].innerText[0]==idt){
+                    temp_s[i].style.background = "black";
+                    temp_s[i].style.color = "white";
+                    temp_s[i].style.border = "1px solid white";
+                    window.location = `/select/${i}`;
+                }
+            }
+            
+        }
+        function make_move(x){
+            let f = document.getElementsByClassName("p")[x].innerText;
+            window.location = `/mm/${f}/${selec}`;
+        }
+        
+        
+
+    </script>
+   
+    
+</body>
+</html>
