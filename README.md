@@ -42,11 +42,14 @@
    Further I was thinking to add a dedicated AI chat bot which will help and assist on player quereys.
 
 
-Other Approach:
+**Other Approach:**
+
    I made the process using if else conditions. You can approach like 
-      Creting a dictionary 
+   
+      - Creting a dictionary 
             d = {P:[F1,B1,L1,R1],H1:[F2,B2,L2,R2],H2:[FL2,FR2,BL2,BR2]}
-      Creating a function validate(move,posx,posy,grid) for validation
+            
+      - Creating a function validate(move,posx,posy,grid) for validation
             move can be taken from d[coin]. The last element tells the number of moves and first element tell the direction.
                   you can write like
                      tempr = posx
@@ -64,7 +67,8 @@ Other Approach:
                      if grid[tempr][tempc] is empty or grid[tempr][tempc] is oponent:
                            return True
                      return False
-      Creating a function makemove(move,posx,posy,grid) for movements
+                     
+      - Creating a function makemove(move,posx,posy,grid) for movements
                      tempr = posx
                      tempc = posy
                      m =  int(move[-1])
