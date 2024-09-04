@@ -1,8 +1,8 @@
 **ADVANCED CHESS Game**
    Rules : 
-     - PAWM - Move 1 step in LEFT, RIGHT, BACKWARD, FORWARD
-     - Hero1 - MOVE 2 step in LEFT, RIGHT, BACKWARD, FORWARD
-     - Hero2 - MOVE 2 step in DIAGONAL BACKWARD LEFT, BACKWARD RIGHT, FORWARD LEFT, FORWARD RIGHT
+     * PAWM - Move 1 step in LEFT, RIGHT, BACKWARD, FORWARD
+     * Hero1 - MOVE 2 step in LEFT, RIGHT, BACKWARD, FORWARD
+     * Hero2 - MOVE 2 step in DIAGONAL BACKWARD LEFT, BACKWARD RIGHT, FORWARD LEFT, FORWARD RIGHT
   Power : 
     According to the given question,
         Pawn does not have power to cut a coin. Other two have power to eliminate coin in the moving direction
